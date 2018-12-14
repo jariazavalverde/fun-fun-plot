@@ -1,9 +1,10 @@
 class Plot:
 	"""This class stores a canvas for drawing."""
 	
-	def __init__(self, component, canvas, width, height):
+	def __init__(self, component, primitives, width, height):
 		self.component = component
-		self.canvas = canvas(width, height)
+		self.primitives = primitives
+		self.canvas = None
 		self.width = width
 		self.height = height
 		# (left, right, top, bottom)
@@ -12,7 +13,20 @@ class Plot:
 	def draw(self, data):
 		"""This method plots a dataset."""
 		length = len(data)
-		self.component.eval(self, data, length).draw(self)
+		instance = self.component.eval(self, data, length)
+		self.canvas = self.primitives["canvas"](self.width, self.height)
+		instance.draw(self)
+	
+	def set_max_dimensions(self, min_x, min_y, max_x, max_y):
+		if min_x > max_x:
+			min_x, max_x = max_x, min_x
+		if min_y > max_y:
+			min_y, max_y = max_y, min_y
+		self.dimensions = (
+			min(self.dimensions[0], min_x),
+			max(self.dimensions[1], max_x),
+			max(self.dimensions[2], max_y),
+			min(self.dimensions[3], min_y))
 
 
 
@@ -85,6 +99,26 @@ class Data(Element):
 	def draw(self, plot):
 		for op in self.operator:
 			op.draw(plot)
+
+
+
+class Line(Element):
+	"""This class represents a line from (x,y) to (fx,fy)."""
+	
+	def __init__(self, x, y, fx, fy):
+		self.x = x
+		self.y = y
+		self.fx = fx
+		self.fy = fy
+	
+	def get_attributes(self):
+		return [self.x, self.y, self.fx, self.fy]
+	
+	def compute(self, plot):
+		plot.set_max_dimensions(self.x, self.y, self.fx, self.fy)
+	
+	def draw(self, plot):
+		plot.primitives["line"](plot.canvas, self.x, self.y, self.fx, self.fy)
 
 
 
