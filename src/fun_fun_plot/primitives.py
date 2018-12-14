@@ -4,6 +4,7 @@ class Plot:
 	def __init__(self, component, primitives, width, height):
 		self.component = component
 		self.primitives = primitives
+		self.computed = False
 		self.canvas = None
 		self.width = width
 		self.height = height
@@ -14,6 +15,8 @@ class Plot:
 		"""This method plots a dataset."""
 		length = len(data)
 		instance = self.component.eval(self, data, length)
+		instance.compute(self)
+		self.computed = True
 		self.canvas = self.primitives["canvas"](self.width, self.height)
 		instance.draw(self)
 	
@@ -27,6 +30,26 @@ class Plot:
 			max(self.dimensions[1], max_x),
 			max(self.dimensions[2], max_y),
 			min(self.dimensions[3], min_y))
+	
+	def get_left(self):
+		if self.computed:
+			return self.dimensions[0]
+		return 0
+	
+	def get_right(self):
+		if self.computed:
+			return self.dimensions[1]
+		return 1
+	
+	def get_top(self):
+		if self.computed:
+			return self.dimensions[2]
+		return 1
+	
+	def get_bottom(self):
+		if self.computed:
+			return self.dimensions[3]
+		return 0
 
 
 
@@ -135,7 +158,7 @@ class Circle(Element):
 	
 	def compute(self, plot):
 		plot.set_max_dimensions(
-			self.x - self.radius, self.y -self.radius,
+			self.x - self.radius, self.y - self.radius,
 			self.x + self.radius, self.y + self.radius)
 	
 	def draw(self, plot):

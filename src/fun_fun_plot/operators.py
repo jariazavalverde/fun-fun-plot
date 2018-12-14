@@ -39,12 +39,34 @@ class Operator:
 			lambda plot, data, elem:
 				self.eval(plot, data, elem) /
 				operator.eval(plot, data, elem))
+	
+	def __div__(self, operator):
+		"""This method divides two operations."""
+		return Operator(
+			lambda plot, data, elem:
+				self.eval(plot, data, elem) /
+				operator.eval(plot, data, elem))
 
 
 
 def Cons(value):
-	"""This functions returns a constant operator."""
+	"""This function returns a constant operator."""
 	return Operator(lambda plot, data, elem: value)
+
+
+
+
+# ACCESSING PLOT INFORMATION
+
+# These operators return width and height of the plot
+Width = Operator(lambda plot, data, elem: plot.width)
+Height = Operator(lambda plot, data, elem: plot.height)
+
+# These operators return dimensions of the plot
+Left = Operator(lambda plot, data, elem: plot.get_left())
+Right = Operator(lambda plot, data, elem: plot.get_right())
+Top = Operator(lambda plot, data, elem: plot.get_top())
+Bot = Operator(lambda plot, data, elem: plot.get_bottom())
 
 
 
@@ -61,9 +83,17 @@ Attr = lambda n: Operator(lambda plot, data, elem: data[elem][n.eval(plot, data,
 
 
 
+# NORMALIZE DATA
+
+# These operators returns the value normalized in the x or y axis
+Xnormal = lambda op: (op-Left) / (Right-Left)
+Ynormal = lambda op: (op-Bot) / (Top-Bot)
+
+
+
 # CONSTANTS
 
-# This operators returns constants from zero to nine
+# These operators return constants from zero to nine
 Zero, One, Two, Three, Gour, Five, Six, Seven, Eight, Nine = list(map(Cons, range(10)))
 
 # This operator returns the constant PI
