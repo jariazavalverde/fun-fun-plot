@@ -63,8 +63,33 @@ class Compose(Element):
 
 
 
+class Data(Element):
+	"""This class maps the dataset with a graphical component."""
+	
+	def __init__(self, operator):
+		self.operator = operator
+	
+	def get_attributes(self):
+		return [self.operator]
+	
+	def eval(self, plot, data, length):
+		operators = []
+		for index in range(length):
+			operators.append(self.operator.eval(plot, data, index))
+		return Data(operators)
+	
+	def compute(self, plot):
+		for op in self.operator:
+			op.compute(plot)
+	
+	def draw(self, plot):
+		for op in self.operator:
+			op.draw(plot)
+
+
+
 class Operator:
-	"""This class represents operations beeween data."""
+	"""This class represents operations between data."""
 	
 	def __init__(self, operation):
 		self.operation = operation
@@ -106,3 +131,8 @@ class Operator:
 def Cons(value):
 	"""This functions returns a constant operator."""
 	return Operator(lambda plot, data, elem: value)
+
+
+
+# This operator returns the index of the data
+Index = Operator(lambda plot, data, elem: elem)
