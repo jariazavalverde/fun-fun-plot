@@ -122,51 +122,21 @@ class Line(Element):
 
 
 
-class Operator:
-	"""This class represents operations between data."""
+class Circle(Element):
+	"""This class represents a circle with center (x,y) and radius r."""
 	
-	def __init__(self, operation):
-		self.operation = operation
+	def __init__(self, x, y, r):
+		self.x = x
+		self.y = y
+		self.radius = r
 	
-	def eval(self, plot, data, elem):
-		"""This method evaluates the operation."""
-		return self.operation(plot, data, elem)
-		
-	def __add__(self, operator):
-		"""This method adds two operations."""
-		return Operator(
-			lambda plot, data, elem:
-				self.eval(plot, data, elem) +
-				operator.eval(plot, data, elem))
+	def get_attributes(self):
+		return [self.x, self.y, self.radius]
 	
-	def __sub__(self, operator):
-		"""This method substracts two operations."""
-		return Operator(
-			lambda plot, data, elem:
-				self.eval(plot, data, elem) -
-				operator.eval(plot, data, elem))
-		
-	def __mul__(self, operator):
-		"""This method multiplies two operations."""
-		return Operator(
-			lambda plot, data, elem:
-				self.eval(plot, data, elem) *
-				operator.eval(plot, data, elem))
+	def compute(self, plot):
+		plot.set_max_dimensions(
+			self.x - self.radius, self.y -self.radius,
+			self.x + self.radius, self.y + self.radius)
 	
-	def __truediv__(self, operator):
-		"""This method divides two operations."""
-		return Operator(
-			lambda plot, data, elem:
-				self.eval(plot, data, elem) /
-				operator.eval(plot, data, elem))
-
-
-
-def Cons(value):
-	"""This functions returns a constant operator."""
-	return Operator(lambda plot, data, elem: value)
-
-
-
-# This operator returns the index of the data
-Index = Operator(lambda plot, data, elem: elem)
+	def draw(self, plot):
+		plot.primitives["circle"](plot.canvas, self.x, self.y, self.radius)
