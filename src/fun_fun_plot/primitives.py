@@ -172,20 +172,22 @@ class Data(Element):
 class Line(Element):
 	"""This class represents a line from (x,y) to (fx,fy)."""
 	
-	def __init__(self, x, y, fx, fy):
+	def __init__(self, x, y, fx, fy, border_color = None, border_width = None):
 		self.x = x
 		self.y = y
 		self.fx = fx
 		self.fy = fy
+		self.border_color = border_color
+		self.border_width = border_width
 	
 	def get_attributes(self):
-		return [self.x, self.y, self.fx, self.fy]
+		return [self.x, self.y, self.fx, self.fy, self.border_color, self.border_width]
 	
 	def compute(self, plot):
 		plot.set_max_dimensions(self.x, self.y, self.fx, self.fy)
 	
 	def draw(self, plot):
-		plot.primitives["line"](plot, self.x, self.y, self.fx, self.fy)
+		plot.primitives["line"](plot, self.x, self.y, self.fx, self.fy, self.border_color, self.border_width)
 
 
 
@@ -245,3 +247,33 @@ class Rectangle(Element):
 		plot.primitives["rectangle"](
 			plot, self.x, self.y, self.dx, self.dy,
 			self.background_color, self.border_color, self.border_width)
+
+
+
+class Text(Element):
+	"""This class represents a text."""
+	
+	def __init__(self, x, y, text, font_family = None, font_size = None, font_color = None, text_align = None):
+		self.x = x
+		self.y = y
+		self.text = text
+		self.font_family = font_family
+		self.font_size = font_size
+		self.font_color = font_color
+		self.text_align = text_align
+	
+	def get_attributes(self):
+		return [
+			self.x, self.y, self.text,
+			self.font_family, self.font_size, self.font_color, self.text_align]
+	
+	def compute(self, plot):
+		plot.set_max_dimensions(self.x, self.y, self.x, self.y)
+	
+	def draw(self, plot):
+		fs = 16 if self.font_size is None else self.font_size
+		ff = "Helvetica" if self.font_family is None else self.font_family
+		fc = "black" if self.font_color is None else self.font_color
+		ta = "center" if self.text_align is None else self.text_algin
+		plot.primitives["text"](
+			plot, self.x, self.y, str(self.text), ff, fs, fc, ta)

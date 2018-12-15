@@ -1,4 +1,4 @@
-from Tkinter import *
+from Tkinter import Canvas, Tk, CENTER, LEFT, RIGHT
 
 
 
@@ -8,9 +8,16 @@ def __tkinter_canvas(width, height):
 	w.pack()
 	return w
 
-def __tkinter_line(plot, x, y, fx, fy):
+def __tkinter_line(plot, x, y, fx, fy, border, width):
 	"""This function draws a line with the Tkinter library."""
-	plot.canvas.create_line(x, plot.height - y, fx, plot.height - fy)
+	plot.canvas.create_line(
+		x,
+		plot.height - y,
+		fx,
+		plot.height - fy,
+		fill = border,
+		width = width
+	)
 
 def __tkinter_circle(plot, x, y, radius, background, border, width):
 	"""This function draws a circle with the Tkinter library."""
@@ -19,7 +26,9 @@ def __tkinter_circle(plot, x, y, radius, background, border, width):
 		plot.height - (y - radius),
 		x + radius,
 		plot.height - (y + radius),
-		fill = background
+		fill = background,
+		outline = border,
+		width = width
 	)
 
 def __tkinter_rectangle(plot, x, y, dx, dy, background, border, width):
@@ -29,9 +38,27 @@ def __tkinter_rectangle(plot, x, y, dx, dy, background, border, width):
 		plot.height - y,
 		x + dx,
 		plot.height - (y + dy),
-		fill = background
+		fill = background,
+		outline = border,
+		width = width
 	)
 
+def __tkinter_text(plot, x, y, text, family, size, color, align):
+	"""This function draws a text with the Tkinter library."""
+	if align == "left":
+		anchor = LEFT
+	elif align == "right":
+		anchor = RIGHT
+	else:
+		anchor = CENTER
+	plot.canvas.create_text(
+		x,
+		plot.height - y,
+		text = text,
+		font = (family, size),
+		fill = color,
+		anchor = anchor
+	)
 
 
 # This dictionary stores all the primitives of the Tkinter library.
@@ -39,5 +66,6 @@ ffp_tkinter = {
 	"canvas": __tkinter_canvas,
 	"line": __tkinter_line,
 	"circle": __tkinter_circle,
-	"rectangle": __tkinter_rectangle
+	"rectangle": __tkinter_rectangle,
+	"text": __tkinter_text
 }
