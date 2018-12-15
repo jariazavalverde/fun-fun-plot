@@ -1,4 +1,15 @@
+#!/usr/bin/env python
+"""This module provides an interface for the Tkinter library."""
+
 from Tkinter import Canvas, Tk, CENTER, LEFT, RIGHT
+
+__author__ = "José Antonio Riaza Valverde"
+__copyright__ = "Copyright 2018, José Antonio Riaza Valverde"
+__credits__ = ["José Antonio Riaza Valverde"]
+__license__ = "BSD 3-Clause License"
+__maintainer__ = "José Antonio Riaza Valverde"
+__email__ = "riazavalverde@gmail.com"
+__status__ = "Development"
 
 
 
@@ -59,6 +70,7 @@ def __tkinter_text(plot, x, y, text, family, size, color, align):
 		fill = color,
 		anchor = anchor
 	)
+
 
 
 # This dictionary stores all the primitives of the Tkinter library.

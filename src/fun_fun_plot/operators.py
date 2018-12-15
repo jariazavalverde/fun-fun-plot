@@ -1,4 +1,15 @@
+#!/usr/bin/env python
+"""This module provides operators for plotting."""
+
 from math import pi
+
+__author__ = "José Antonio Riaza Valverde"
+__copyright__ = "Copyright 2018, José Antonio Riaza Valverde"
+__credits__ = ["José Antonio Riaza Valverde"]
+__license__ = "BSD 3-Clause License"
+__maintainer__ = "José Antonio Riaza Valverde"
+__email__ = "riazavalverde@gmail.com"
+__status__ = "Development"
 
 
 
@@ -52,7 +63,6 @@ class Operator:
 def Cons(value):
 	"""This function returns a constant operator."""
 	return Operator(lambda plot, data, elem: value)
-
 
 
 
