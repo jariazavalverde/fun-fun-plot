@@ -205,11 +205,16 @@ class Data(Element):
 class Axis(Element):
 	"""This class represents the axis."""
 	
-	# Default margin for axis
-	margin = 20
+	# Default margins for axis
+	margin_left = 60
+	margin_right = 30
+	margin_top = 30
+	margin_bottom = 30
 	
-	def __init__(self, component):
+	def __init__(self, component, nbins_x = None, nbins_y = None):
 		self.component = component
+		self.nbins_x = nbins_x
+		self.nbins_y = nbins_y
 	
 	def get_attributes(self):
 		return [self.component]
@@ -217,8 +222,8 @@ class Axis(Element):
 	def eval(self, plot, data, elem, offset):
 		left, right, top, bottom = offset
 		new_offset = (
-			left+self.margin, right+self.margin,
-			top+self.margin, bottom+self.margin)
+			left+self.margin_left, right+self.margin_right,
+			top+self.margin_top, bottom+self.margin_bottom)
 		component = self.component.eval(plot, data, elem, new_offset)
 		component.offset = new_offset
 		return Axis(component)
@@ -227,22 +232,61 @@ class Axis(Element):
 		self.component.compute(plot)
 	
 	def draw(self, plot):
+		nbins_x = 5 if self.nbins_x is None else self.nbins_x
+		nbins_y = 5 if self.nbins_y is None else self.nbins_y
+		width = plot.width - self.get_offset_right() - self.margin_left - self.margin_right
+		height = plot.height - self.get_offset_top() - self.margin_top - self.margin_bottom
+		distance_bins_x = float(width) / float(nbins_x)
+		distance_bins_y = float(height) / float(nbins_y)
+		distance_x = float(plot.get_right()-plot.get_left()) / float(nbins_x)
+		distance_y = float(plot.get_top()-plot.get_bottom()) / float(nbins_y)
 		# Draw background
 		plot.primitives["rectangle"](plot,
-			self.margin + self.get_offset_left(),
-			self.margin + self.get_offset_bottom(),
-			plot.width - self.get_offset_right() - 2*self.margin,
-			plot.height - self.get_offset_top() - 2*self.margin,
+			self.margin_left + self.get_offset_left(),
+			self.margin_bottom + self.get_offset_bottom(),
+			width,
+			height,
 			"white", "black", 0)
 		# Draw component inside
 		self.component.draw(plot)
 		# Draw axis
 		plot.primitives["rectangle"](plot,
-			self.margin + self.get_offset_left(),
-			self.margin + self.get_offset_bottom(),
-			plot.width - self.get_offset_left() - self.get_offset_right() - 2*self.margin,
-			plot.height - self.get_offset_bottom() - self.get_offset_top() - 2*self.margin,
+			self.margin_left + self.get_offset_left(),
+			self.margin_bottom + self.get_offset_bottom(),
+			width,
+			height,
 			None, "black", 1)
+		for i in range(nbins_x + 1):
+			xi = self.margin_left + self.get_offset_left() + i*distance_bins_x
+			plot.primitives["line"](
+				plot,
+				xi,
+				self.margin_bottom + self.get_offset_bottom() - 5,
+				xi,
+				self.margin_bottom + self.get_offset_bottom() + 5,
+				"black", 1)
+			plot.primitives["text"](
+				plot,
+				xi,
+				self.margin_bottom + self.get_offset_bottom() - 15,
+				str(plot.get_left() + i*distance_x),
+				"Arial", 10, "black", "center")
+		for i in range(nbins_y + 1):
+			yi = self.margin_bottom + self.get_offset_bottom() + i*distance_bins_y
+			plot.primitives["line"](
+				plot,
+				self.margin_left + self.get_offset_left() - 5,
+				yi,
+				self.margin_left + self.get_offset_left() + 5,
+				yi,
+				"black", 1)
+			plot.primitives["text"](
+				plot,
+				self.margin_left + self.get_offset_left() - 10,
+				yi,
+				str(plot.get_bottom() + i*distance_y),
+				"Arial", 10, "black", "right")
+			
 
 
 

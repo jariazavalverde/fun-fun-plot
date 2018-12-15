@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """This module provides an interface for the Tkinter library."""
 
-from Tkinter import Canvas, Tk, CENTER, LEFT, RIGHT
+from Tkinter import Canvas, Tk, CENTER, E, W
 
 __author__ = "José Antonio Riaza Valverde"
 __copyright__ = "Copyright 2018, José Antonio Riaza Valverde"
@@ -58,9 +58,9 @@ def __tkinter_rectangle(plot, x, y, dx, dy, background, border, width):
 def __tkinter_text(plot, x, y, text, family, size, color, align):
 	"""This function draws a text with the Tkinter library."""
 	if align == "left":
-		anchor = LEFT
+		anchor = W
 	elif align == "right":
-		anchor = RIGHT
+		anchor = E
 	else:
 		anchor = CENTER
 	plot.canvas.create_text(
