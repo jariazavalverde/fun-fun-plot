@@ -31,7 +31,7 @@ class Plot:
 		component = plot.component
 		# Add axis
 		if plot.axis:
-			component = Rectangle(One, One, Width - One, Height - One, Cons("white")) + component
+			component = Rectangle(One, Zero, Width - One, Height - One, Cons("white")) + component
 		# Compute data
 		component.eval(plot, data, length).compute(plot)
 		plot.computed = True
@@ -185,7 +185,7 @@ class Line(Element):
 		plot.set_max_dimensions(self.x, self.y, self.fx, self.fy)
 	
 	def draw(self, plot):
-		plot.primitives["line"](plot.canvas, self.x, self.y, self.fx, self.fy)
+		plot.primitives["line"](plot, self.x, self.y, self.fx, self.fy)
 
 
 
@@ -213,7 +213,7 @@ class Circle(Element):
 	
 	def draw(self, plot):
 		plot.primitives["circle"](
-			plot.canvas, self.x, self.y, self.radius,
+			plot, self.x, self.y, self.radius,
 			self.background_color, self.border_color, self.border_width)
 
 
@@ -243,5 +243,5 @@ class Rectangle(Element):
 	
 	def draw(self, plot):
 		plot.primitives["rectangle"](
-			plot.canvas, self.x, self.y, self.dx, self.dy,
+			plot, self.x, self.y, self.dx, self.dy,
 			self.background_color, self.border_color, self.border_width)

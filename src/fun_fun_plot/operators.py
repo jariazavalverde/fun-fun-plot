@@ -81,6 +81,9 @@ Value = Operator(lambda plot, data, elem: data[elem])
 # This operator returns the n-th value of the attribute
 Attr = lambda n: Operator(lambda plot, data, elem: data[elem][n.eval(plot, data, elem)])
 
+# This operator returns the length of the data
+DataLen = Operator(lambda plot, data, elem: len(data))
+
 
 
 # NORMALIZE DATA
