@@ -48,6 +48,7 @@ class Plot:
 	
 	def set_max_dimensions(self, min_x, min_y, max_x, max_y):
 		"""This method updates the maximum and minimum values."""
+		print min_x, max_x
 		if min_x > max_x:
 			min_x, max_x = max_x, min_x
 		if min_y > max_y:
@@ -246,16 +247,10 @@ class Axis(Element):
 			self.margin_bottom + self.get_offset_bottom(),
 			width,
 			height,
-			"white", "black", 0)
+			"white", "black", 1)
 		# Draw component inside
 		self.component.draw(plot)
 		# Draw axis
-		plot.primitives["rectangle"](plot,
-			self.margin_left + self.get_offset_left(),
-			self.margin_bottom + self.get_offset_bottom(),
-			width,
-			height,
-			None, "black", 1)
 		for i in range(nbins_x + 1):
 			xi = self.margin_left + self.get_offset_left() + i*distance_bins_x
 			plot.primitives["line"](
@@ -335,10 +330,7 @@ class Circle(Element):
 			self.background_color, self.border_color, self.border_width]
 	
 	def compute(self, plot):
-		bw = self.border_width if self.border_width is not None else 1
-		plot.set_max_dimensions(
-			self.x - self.radius - bw, self.y - self.radius - bw,
-			self.x + self.radius + bw, self.y + self.radius + bw)
+		plot.set_max_dimensions(self.x, self.y, self.x, self.y)
 	
 	def draw(self, plot):
 		plot.primitives["circle"](
@@ -368,10 +360,7 @@ class Rectangle(Element):
 			self.background_color, self.border_color, self.border_width]
 	
 	def compute(self, plot):
-		bw = self.border_width if self.border_width is not None else 1
-		plot.set_max_dimensions(
-			self.x - bw + self.get_offset_left(), self.y - bw,
-			self.x + self.dx + bw, self.y + self.dy + bw)
+		plot.set_max_dimensions(self.x, self.y, self.x + self.dx, self.y + self.dy)
 	
 	def draw(self, plot):
 		plot.primitives["rectangle"](
