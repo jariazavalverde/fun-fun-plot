@@ -160,7 +160,7 @@ class Compose(Element):
 	
 	def eval(self, plot, data, length, offset):
 		left = self.left.eval(plot, data, length, offset)
-		right = self.left.eval(plot, data, length, offset)
+		right = self.right.eval(plot, data, length, offset)
 		left.offset = offset
 		right.offset = offset
 		return Compose(left, right)
