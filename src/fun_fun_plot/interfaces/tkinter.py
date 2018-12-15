@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """This module provides an interface for the Tkinter library."""
 
 from Tkinter import Canvas, Tk, CENTER, LEFT, RIGHT

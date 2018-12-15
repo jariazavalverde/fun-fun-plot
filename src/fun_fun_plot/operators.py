@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """This module provides operators for plotting."""
 
 from math import pi
@@ -19,80 +20,80 @@ class Operator:
 	def __init__(self, operation):
 		self.operation = operation
 	
-	def eval(self, plot, data, elem):
+	def eval(self, plot, data, elem, offset):
 		"""This method evaluates the operation."""
-		return self.operation(plot, data, elem)
+		return self.operation(plot, data, elem, offset)
 		
 	def __add__(self, operator):
 		"""This method adds two operations."""
 		return Operator(
-			lambda plot, data, elem:
-				self.eval(plot, data, elem) +
-				operator.eval(plot, data, elem))
+			lambda plot, data, elem, offset:
+				self.eval(plot, data, elem, offset) +
+				operator.eval(plot, data, elem, offset))
 	
 	def __sub__(self, operator):
 		"""This method substracts two operations."""
 		return Operator(
-			lambda plot, data, elem:
-				self.eval(plot, data, elem) -
-				operator.eval(plot, data, elem))
+			lambda plot, data, elem, offset:
+				self.eval(plot, data, elem, offset) -
+				operator.eval(plot, data, elem, offset))
 		
 	def __mul__(self, operator):
 		"""This method multiplies two operations."""
 		return Operator(
-			lambda plot, data, elem:
-				self.eval(plot, data, elem) *
-				operator.eval(plot, data, elem))
+			lambda plot, data, elem, offset:
+				self.eval(plot, data, elem, offset) *
+				operator.eval(plot, data, elem, offset))
 	
 	def __truediv__(self, operator):
 		"""This method divides two operations."""
 		return Operator(
-			lambda plot, data, elem:
-				self.eval(plot, data, elem) /
-				operator.eval(plot, data, elem))
+			lambda plot, data, elem, offset:
+				self.eval(plot, data, elem, offset) /
+				operator.eval(plot, data, elem, offset))
 	
 	def __div__(self, operator):
 		"""This method divides two operations."""
 		return Operator(
-			lambda plot, data, elem:
-				self.eval(plot, data, elem) /
-				operator.eval(plot, data, elem))
+			lambda plot, data, elem, offset:
+				self.eval(plot, data, elem, offset) /
+				operator.eval(plot, data, elem, offset))
 
 
 
 def Cons(value):
 	"""This function returns a constant operator."""
-	return Operator(lambda plot, data, elem: value)
+	return Operator(lambda plot, data, elem, offset: value)
 
 
 
 # ACCESSING PLOT INFORMATION
 
 # These operators return width and height of the plot
-Width = Operator(lambda plot, data, elem: plot.get_width())
-Height = Operator(lambda plot, data, elem: plot.get_height())
+Width = Operator(lambda plot, data, elem, offset: plot.get_width(offset))
+Height = Operator(lambda plot, data, elem, offset: plot.get_height(offset))
 
 # These operators return dimensions of the plot
-Left = Operator(lambda plot, data, elem: plot.get_left())
-Right = Operator(lambda plot, data, elem: plot.get_right())
-Top = Operator(lambda plot, data, elem: plot.get_top())
-Bot = Operator(lambda plot, data, elem: plot.get_bottom())
+Left = Operator(lambda plot, data, elem, offset: plot.get_left())
+Right = Operator(lambda plot, data, elem, offset: plot.get_right())
+Top = Operator(lambda plot, data, elem, offset: plot.get_top())
+Bot = Operator(lambda plot, data, elem, offset: plot.get_bottom())
 
 
 
 # ACCESSING DATA
 
 # This operator returns the current index of the data
-Index = Operator(lambda plot, data, elem: elem)
+Index = Operator(lambda plot, data, elem, offset: elem)
 
 # This operator returns the current value of the data
-Value = Operator(lambda plot, data, elem: data[elem])
+Value = Operator(lambda plot, data, elem, offset: data[elem])
 
 # This operator returns the n-th value of the attribute
-Attr = lambda n: Operator(lambda plot, data, elem: data[elem][n.eval(plot, data, elem)])
+Attr = lambda n: Operator(lambda plot, data, elem, offset: data[elem][n.eval(plot, data, elem, offset)])
 
 # This operator returns the length of the data
-DataLen = Operator(lambda plot, data, elem: len(data))
+DataLen = Operator(lambda plot, data, elem, offset: len(data))
 
 
 
@@ -117,4 +118,4 @@ Pi = Cons(pi)
 # COLORS
 
 # Assign color to a class
-ClassColor = lambda classname: Operator(lambda plot, data, elem: plot.class_color(classname.eval(plot, data, elem)))
+ClassColor = lambda classname: Operator(lambda plot, data, elem, offset: plot.class_color(classname.eval(plot, data, elem, offset)))
