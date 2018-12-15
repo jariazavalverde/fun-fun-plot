@@ -59,8 +59,8 @@ def Cons(value):
 # ACCESSING PLOT INFORMATION
 
 # These operators return width and height of the plot
-Width = Operator(lambda plot, data, elem: plot.width)
-Height = Operator(lambda plot, data, elem: plot.height)
+Width = Operator(lambda plot, data, elem: plot.get_width())
+Height = Operator(lambda plot, data, elem: plot.get_height())
 
 # These operators return dimensions of the plot
 Left = Operator(lambda plot, data, elem: plot.get_left())
@@ -86,15 +86,15 @@ Attr = lambda n: Operator(lambda plot, data, elem: data[elem][n.eval(plot, data,
 # NORMALIZE DATA
 
 # These operators returns the value normalized in the x or y axis
-Xnormal = lambda op: (op-Left) / (Right-Left)
-Ynormal = lambda op: (op-Bot) / (Top-Bot)
+Xnormal = lambda op: Width * (op-Left) / (Right-Left)
+Ynormal = lambda op: Height * (op-Bot) / (Top-Bot)
 
 
 
 # CONSTANTS
 
 # These operators return constants from zero to nine
-Zero, One, Two, Three, Gour, Five, Six, Seven, Eight, Nine = list(map(Cons, range(10)))
+Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine = list(map(Cons, range(10)))
 
 # This operator returns the constant PI
 Pi = Cons(pi)

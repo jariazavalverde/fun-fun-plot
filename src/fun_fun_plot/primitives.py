@@ -1,26 +1,46 @@
+from operators import *
+
+
+
 class Plot:
 	"""This class stores a canvas for drawing."""
 	
-	def __init__(self, component, primitives, width, height):
+	def __init__(self, component, primitives, width = 200, height = 200, axis = True):
 		self.component = component
 		self.primitives = primitives
 		self.computed = False
 		self.canvas = None
 		self.width = width
 		self.height = height
+		self.axis = axis
 		# (left, right, top, bottom)
 		self.dimensions = (float('inf'), float('-inf'), float('-inf'), float('inf'))
 	
+	def copy(self):
+		"""This method returns a new instance of the plot."""
+		return Plot(self.component, self.primitives, self.width, self.height, self.axis)
+	
 	def draw(self, data):
 		"""This method plots a dataset."""
+		if self.computed:
+			return self
 		length = len(data)
-		instance = self.component.eval(self, data, length)
-		instance.compute(self)
-		self.computed = True
-		self.canvas = self.primitives["canvas"](self.width, self.height)
-		instance.draw(self)
+		plot = self.copy()
+		component = plot.component
+		# Add axis
+		if plot.axis:
+			component = Rectangle(One, One, Width - One, Height - One, Cons("white")) + component
+		# Compute data
+		component.eval(plot, data, length).compute(plot)
+		plot.computed = True
+		# Create canvas
+		plot.canvas = plot.primitives["canvas"](plot.width, plot.height)
+		# Draw data
+		component.eval(plot, data, length).draw(plot)
+		return plot
 	
 	def set_max_dimensions(self, min_x, min_y, max_x, max_y):
+		"""This method updates the maximum and minimum values."""
 		if min_x > max_x:
 			min_x, max_x = max_x, min_x
 		if min_y > max_y:
@@ -31,22 +51,38 @@ class Plot:
 			max(self.dimensions[2], max_y),
 			min(self.dimensions[3], min_y))
 	
+	def get_width(self):
+		"""This method returns the width of the plot when it is computed."""
+		if self.computed:
+			return self.width
+		return 1
+	
+	def get_height(self):
+		"""This method returns the height of the plot when it is computed."""
+		if self.computed:
+			return self.height
+		return 1
+	
 	def get_left(self):
+		"""This method returns the most left value of the plot when it is computed."""
 		if self.computed:
 			return self.dimensions[0]
 		return 0
 	
 	def get_right(self):
+		"""This method returns the most right value of the plot when it is computed."""
 		if self.computed:
 			return self.dimensions[1]
 		return 1
 	
 	def get_top(self):
+		"""This method returns the most top value of the plot when it is computed."""
 		if self.computed:
 			return self.dimensions[2]
 		return 1
 	
 	def get_bottom(self):
+		"""This method returns the most bottom value of the plot when it is computed."""
 		if self.computed:
 			return self.dimensions[3]
 		return 0
@@ -71,7 +107,7 @@ class Element:
 	def eval(self, plot, data, elem):
 		"""This method returns an evaluated instance of the graphical component."""
 		return self.__class__(
-			*list(map(lambda x: x.eval(plot, data, elem),
+			*list(map(lambda x: x.eval(plot, data, elem) if x is not None else None,
 				self.get_attributes())))
 	
 	def __add__(self, elem):
@@ -148,18 +184,56 @@ class Line(Element):
 class Circle(Element):
 	"""This class represents a circle with center (x,y) and radius r."""
 	
-	def __init__(self, x, y, r):
+	def __init__(self, x, y, r, background_color = None, border_color = None, border_width = None):
 		self.x = x
 		self.y = y
 		self.radius = r
+		self.background_color = background_color
+		self.border_color = border_color
+		self.border_width = border_width
 	
 	def get_attributes(self):
-		return [self.x, self.y, self.radius]
+		return [
+			self.x, self.y, self.radius,
+			self.background_color, self.border_color, self.border_width]
 	
 	def compute(self, plot):
+		bw = self.border_width if self.border_width is not None else 1
 		plot.set_max_dimensions(
-			self.x - self.radius, self.y - self.radius,
-			self.x + self.radius, self.y + self.radius)
+			self.x - self.radius - bw, self.y - self.radius - bw,
+			self.x + self.radius + bw, self.y + self.radius + bw)
 	
 	def draw(self, plot):
-		plot.primitives["circle"](plot.canvas, self.x, self.y, self.radius)
+		plot.primitives["circle"](
+			plot.canvas, self.x, self.y, self.radius,
+			self.background_color, self.border_color, self.border_width)
+
+
+
+class Rectangle(Element):
+	"""This class represents a rectangle."""
+	
+	def __init__(self, x, y, dx, dy, background_color = None, border_color = None, border_width = None):
+		self.x = x
+		self.y = y
+		self.dx = dx
+		self.dy = dy
+		self.background_color = background_color
+		self.border_color = border_color
+		self.border_width = border_width
+	
+	def get_attributes(self):
+		return [
+			self.x, self.y, self.dx, self.dy,
+			self.background_color, self.border_color, self.border_width]
+	
+	def compute(self, plot):
+		bw = self.border_width if self.border_width is not None else 1
+		plot.set_max_dimensions(
+			self.x - bw, self.y - bw,
+			self.x + self.dx + bw, self.y + self.dy + bw)
+	
+	def draw(self, plot):
+		plot.primitives["rectangle"](
+			plot.canvas, self.x, self.y, self.dx, self.dy,
+			self.background_color, self.border_color, self.border_width)
