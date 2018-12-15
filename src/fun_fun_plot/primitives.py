@@ -9,6 +9,8 @@ class Plot:
 		self.component = component
 		self.primitives = primitives
 		self.computed = False
+		self.colors = dict([])
+		self.palette = ["red", "green", "blue", "yellow"]
 		self.canvas = None
 		self.width = width
 		self.height = height
@@ -86,6 +88,12 @@ class Plot:
 		if self.computed:
 			return self.dimensions[3]
 		return 0
+	
+	def class_color(self, classname):
+		"""This method assigns and returns colors for classes."""
+		if self.colors.get(classname) is None:
+			self.colors[classname] = self.palette[len(self.colors) % len(self.palette)]
+		return self.colors[classname]
 
 
 

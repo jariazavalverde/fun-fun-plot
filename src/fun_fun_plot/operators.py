@@ -98,3 +98,10 @@ Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine = list(map(Cons, rang
 
 # This operator returns the constant PI
 Pi = Cons(pi)
+
+
+
+# COLORS
+
+# Assign color to a class
+ClassColor = lambda classname: Operator(lambda plot, data, elem: plot.class_color(classname.eval(plot, data, elem)))
