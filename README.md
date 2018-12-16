@@ -110,10 +110,10 @@ PiePlot.draw([
 
 
 
-#### Polar Bar Plot
+#### Radial Bar Plot
 
 ```python
-PolarBarPlot = Plot(
+RadialBarPlot = Plot(
     Rectangle(0, 0, Width, Height, background_color = "white", border_width = 0) +
     Data(
         Pie(
@@ -159,7 +159,7 @@ PolarBarPlot = Plot(
 ```
 
 ```python
-PolarBarPlot.draw([
+RadialBarPlot.draw([
     [27.0, "Dark",     "class"],
     [26.0, "Light",    "class"],
     [15.0, "Water",    "class"],
@@ -172,7 +172,7 @@ PolarBarPlot.draw([
 ])
 ```
 
-![Polar Bar plot](samples/polarbar.png)
+![Radial Bar plot](samples/radialbar.png)
 
 
 
