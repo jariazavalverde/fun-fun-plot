@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 """This module provides an interface for the Tkinter library."""
 
-from Tkinter import Canvas, Tk, CENTER, E, W
+from math import sin, cos
+from Tkinter import Canvas, Tk, CENTER, E, W, PIESLICE
 
 __author__ = "José Antonio Riaza Valverde"
 __copyright__ = "Copyright 2018, José Antonio Riaza Valverde"
@@ -29,6 +30,21 @@ def __tkinter_line(plot, x, y, fx, fy, border, width):
 		plot.height - fy,
 		fill = border,
 		width = width
+	)
+
+def __tkinter_pie(plot, x, y, radius, alpha, beta, background, border, width):
+	"""This function draws a sector with the Tkinter library."""
+	plot.canvas.create_arc(
+		x - radius,
+		plot.height - (y - radius),
+		x + radius,
+		plot.height - (y + radius),
+		start = alpha,
+		extent = beta,
+		fill = background,
+		outline = border,
+		width = width,
+		style = PIESLICE
 	)
 
 def __tkinter_circle(plot, x, y, radius, background, border, width):
@@ -78,6 +94,7 @@ def __tkinter_text(plot, x, y, text, family, size, color, align):
 ffp_tkinter = {
 	"canvas": __tkinter_canvas,
 	"line": __tkinter_line,
+	"pie": __tkinter_pie,
 	"circle": __tkinter_circle,
 	"rectangle": __tkinter_rectangle,
 	"text": __tkinter_text

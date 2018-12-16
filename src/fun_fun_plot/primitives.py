@@ -347,6 +347,38 @@ class Circle(Element):
 
 
 
+class Pie(Element):
+	"""This class represents a sector."""
+	
+	def __init__(self, x, y, r, alpha, beta, background_color = None, border_color = None, border_width = None):
+		self.x = x
+		self.y = y
+		self.radius = r
+		self.alpha = alpha
+		self.beta = beta
+		self.background_color = background_color
+		self.border_color = border_color
+		self.border_width = border_width
+	
+	def get_attributes(self):
+		return [
+			self.x, self.y, self.radius, self.alpha, self.beta,
+			self.background_color, self.border_color, self.border_width]
+	
+	def compute(self, plot):
+		plot.set_max_dimensions(self.x, self.y, self.x, self.y)
+	
+	def draw(self, plot):
+		plot.primitives["pie"](
+			plot,
+			self.x + self.get_offset_left(),
+			self.y + self.get_offset_bottom(),
+			self.radius,
+			self.alpha, self.beta,
+			self.background_color, self.border_color, self.border_width)
+
+
+
 class Rectangle(Element):
 	"""This class represents a rectangle."""
 	
