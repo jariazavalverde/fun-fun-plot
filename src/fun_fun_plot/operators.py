@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """This module provides operators for plotting."""
 
-from math import pi
+from math import pi, sin, cos
 
 __author__ = "José Antonio Riaza Valverde"
 __copyright__ = "Copyright 2018, José Antonio Riaza Valverde"
@@ -58,12 +58,27 @@ class Operator:
 			lambda plot, data, elem, offset:
 				self.eval(plot, data, elem, offset) /
 				operator.eval(plot, data, elem, offset))
+				
+	def __rshift__(self, key):
+		"""This method stores the value in the plot."""
+		def _set(plot, key, value):
+			plot.store_data(key, value)
+			return value
+		return Operator(lambda plot, data, elem, offset: _set(
+			plot,
+			key.eval(plot, data, elem, offset),
+			self.eval(plot, data, elem, offset)))
 
 
 
 def Cons(value):
 	"""This function returns a constant operator."""
 	return Operator(lambda plot, data, elem, offset: value)
+
+def Call(func):
+	"""This function returns a function operator."""
+	return lambda *args: Operator(lambda plot, data, elem, offset:
+		func(*list(map(lambda x: x.eval(plot, data, elem, offset), args))))
 
 
 
@@ -97,6 +112,11 @@ Column = lambda n: Operator(lambda plot, data, elem, offset:(lambda _n: list(map
 
 # This operator returns the length of the data
 DataLen = Operator(lambda plot, data, elem, offset: float(len(data)))
+
+# This operator returns the value of the key data
+Get = lambda key, default = Cons(None): Operator(lambda plot, data, elem, offset:
+	plot.get_data(key if isinstance(key, basestring) else key.eval(plot, data, elem, offset),
+	default.eval(plot, data, elem, offset)))
 
 
 
@@ -135,3 +155,12 @@ def Range(n, start, incr):
 		n.eval(plot, data, elem, offset),
 		start.eval(plot, data, elem, offset),
 		incr.eval(plot, data, elem, offset)))
+
+
+
+# ARITHMETIC OPERATIONS
+Sum = lambda lst: Operator(lambda plot, data, elem, offset: sum(lst.eval(plot, data, elem, offset)))
+Sin = Call(sin)
+Cos = Call(cos)
+Radians = lambda angle: angle * Pi / Cons(180)
+Str = Call(str)

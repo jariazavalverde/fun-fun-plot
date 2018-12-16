@@ -15,12 +15,13 @@ __status__ = "Development"
 class Plot:
 	"""This class stores a canvas for drawing."""
 	
-	def __init__(self, component, primitives, width = 200, height = 200):
+	def __init__(self, component, primitives, width = 200, height = 200, data = None):
 		self.component = component
 		self.primitives = primitives
 		self.computed = False
 		self.colors = dict([])
-		self.palette = ["red", "green", "blue", "yellow"]
+		self.data = dict([]) if data is None else data
+		self.palette = ["red", "green", "blue", "yellow", "orange", "pink"]
 		self.canvas = None
 		self.width = width
 		self.height = height
@@ -29,7 +30,7 @@ class Plot:
 	
 	def copy(self):
 		"""This method returns a new instance of the plot."""
-		return Plot(self.component, self.primitives, self.width, self.height)
+		return Plot(self.component, self.primitives, self.width, self.height, self.data)
 	
 	def draw(self, data):
 		"""This method plots a dataset."""
@@ -99,6 +100,15 @@ class Plot:
 		if self.colors.get(classname) is None:
 			self.colors[classname] = self.palette[len(self.colors) % len(self.palette)]
 		return self.colors[classname]
+	
+	def store_data(self, key, value):
+		"""This method stores the (key,value) data."""
+		self.data[key] = value
+		return value
+	
+	def get_data(self, key, default):
+		"""This method returns the data for the given key."""
+		return self.data.get(key, default)
 
 
 
@@ -286,8 +296,19 @@ class Axis(Element):
 				yi,
 				str(ylabels[i]),
 				"Arial", 10, "black", "right")
-			
 
+
+
+class Empty(Element):	
+	"""This class does not draw nothing."""
+	
+	def __init__(self, *args, **kwargs):
+		self.args = list(args)
+		self.kwargs = kwargs
+	
+	def get_attributes(self):
+		return self.args + self.kwargs.values()
+	
 
 
 class Line(Element):
