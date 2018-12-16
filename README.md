@@ -9,10 +9,10 @@ ScatterPlot = Plot(
     Axis(
         Data(
             Circle(
-                Xnormal(Attr(Zero)),
-                Ynormal(Attr(One)),
-                Four,
-                background_color = ClassColor(Attr(Two))
+                Xnormal(Attr(0)),
+                Ynormal(Attr(1)),
+                4,
+                background_color = ClassColor(Attr(2))
             )
         )
     ),
@@ -35,20 +35,20 @@ BarPlot = Plot(
         Data(
             Rectangle(
                 Index * (Width / DataLen),
-                Zero,
+                0,
                 Width / DataLen,
-                Ynormal(Attr(Zero)),
-                background_color = ClassColor(Attr(Two))
+                Ynormal(Attr(0)),
+                background_color = ClassColor(Attr(2))
             ) +
             Text(
-                (Cons(0.5) + Index) * (Width / DataLen),
-                Ynormal(Attr(Zero)) - Cons(10),
-                Attr(Zero),
-                font_size = Cons(10)
+                (0.5 + Index) * (Width / DataLen),
+                Ynormal(Attr(0)) - 10,
+                Attr(0),
+                font_size = 10
             )
         ),
-        xticks = Range(DataLen, Width/DataLen/Two, Width/DataLen),
-        xlabels = Column(One)
+        xticks = Range(DataLen, Width/DataLen/2, Width/DataLen),
+        xlabels = Column(1)
     ),
     ffp_tkinter, width = 400, height = 400
 )
@@ -75,21 +75,21 @@ BarPlot.draw([
 PiePlot = Plot(
     Data(
         Empty(
-            Get("angle", Zero) + Get("alpha", Zero) >> Cons("angle")
+            Get("angle", 0) + Get("alpha", 0) >> "angle"
         ) +
         Pie(
-            Width/Two,
-            Height/Two,
-            Width/Three >> Cons("radius"),
+            Width/2,
+            Height/2,
+            Width/3 >> "radius",
             Get("angle"),
-            Attr(Zero) * Cons(360) / Sum(Column(Zero)) >> Cons("alpha"),
-            background_color = ClassColor(Attr(One))
+            Attr(0) * 360 / Call(sum)(Column(0)) >> "alpha",
+            background_color = ClassColor(Attr(1))
         ) +
         Text(
-            Width/Two + Cos(Radians(Get("angle") + Get("alpha")/Two)) * Get("radius")/Two,
-            Height/Two + Sin(Radians(Get("angle") + Get("alpha")/Two)) * Get("radius")/Two,
-            Str(Get("alpha") / Cons(3.6)) + Cons(" %"),
-            font_size = Cons(12)
+            Width/2 + Call(cos)((Get("angle") + Get("alpha")/2)*pi/180) * Get("radius")/2,
+            Height/2 + Call(sin)((Get("angle") + Get("alpha")/2)*pi/180) * Get("radius")/2,
+            Call(str)(Get("alpha") / 3.6) + " %",
+            font_size = 12
         )
     ),
     ffp_tkinter, width = 400, height = 400

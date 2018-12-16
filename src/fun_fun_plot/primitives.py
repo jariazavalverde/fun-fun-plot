@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 """This module provides primitive classes for plotting."""
 
+
+
 __author__ = "José Antonio Riaza Valverde"
 __copyright__ = "Copyright 2018, José Antonio Riaza Valverde"
 __credits__ = ["José Antonio Riaza Valverde"]
@@ -9,6 +11,15 @@ __license__ = "BSD 3-Clause License"
 __maintainer__ = "José Antonio Riaza Valverde"
 __email__ = "riazavalverde@gmail.com"
 __status__ = "Development"
+
+
+
+def ffp_eval(obj, plot, data, elem, offset):
+	"""This functions gets the value of any object."""
+	if isinstance(obj, Element) or isinstance(obj, Operator):
+		return obj.eval(plot, data, elem, offset)
+	else:
+		return obj
 
 
 
@@ -39,12 +50,12 @@ class Plot:
 		length = len(data)
 		plot = self.copy()
 		# Compute data
-		plot.component.eval(plot, data, length, (0,0,0,0)).compute(plot)
+		ffp_eval(plot.component, plot, data, length, (0,0,0,0)).compute(plot)
 		plot.computed = True
 		# Create canvas
 		plot.canvas = plot.primitives["canvas"](plot.width, plot.height)
 		# Draw data
-		plot.component.eval(plot, data, length, (0,0,0,0)).draw(plot)
+		ffp_eval(plot.component, plot, data, length, (0,0,0,0)).draw(plot)
 		return plot
 	
 	def set_max_dimensions(self, min_x, min_y, max_x, max_y):
@@ -149,12 +160,89 @@ class Element:
 	def eval(self, plot, data, elem, offset = (0,0,0,0)):
 		"""This method returns an evaluated instance of the graphical component."""
 		return self.__class__(
-			*list(map(lambda x: x.eval(plot, data, elem, offset) if x is not None else None,
+			*list(map(lambda x: ffp_eval(x, plot, data, elem, offset) if x is not None else None,
 				self.get_attributes())))
 	
 	def __add__(self, elem):
 		"""This method sequentially joins two graphical components."""
 		return Compose(self, elem)
+
+
+
+class Operator:
+	"""This class represents operations between data."""
+	
+	def __init__(self, operation):
+		self.operation = operation
+	
+	def eval(self, plot, data, elem, offset):
+		"""This method evaluates the operation."""
+		return self.operation(plot, data, elem, offset)
+		
+	def __add__(self, operator):
+		"""This method adds two operations."""
+		return Operator(
+			lambda plot, data, elem, offset:
+				ffp_eval(self, plot, data, elem, offset) +
+				ffp_eval(operator, plot, data, elem, offset))
+	
+	def __radd__(self, operator):
+		"""This method adds two operations."""
+		return self.__add__(operator)
+	
+	def __sub__(self, operator):
+		"""This method substracts two operations."""
+		return Operator(
+			lambda plot, data, elem, offset:
+				ffp_eval(self, plot, data, elem, offset) -
+				ffp_eval(operator, plot, data, elem, offset))
+	
+	def __rsub__(self, operator):
+		"""This method substracts two operations."""
+		return self.__sub__(operator)
+		
+	def __mul__(self, operator):
+		"""This method multiplies two operations."""
+		return Operator(
+			lambda plot, data, elem, offset:
+				ffp_eval(self, plot, data, elem, offset) *
+				ffp_eval(operator, plot, data, elem, offset))
+	
+	def __rmul__(self, operator):
+		"""This method multiplies two operations."""
+		return self.__mul__(operator)
+	
+	def __truediv__(self, operator):
+		"""This method divides two operations."""
+		return Operator(
+			lambda plot, data, elem, offset:
+				ffp_eval(self, plot, data, elem, offset) /
+				ffp_eval(operator, plot, data, elem, offset))
+	
+	def __rtruediv__(self, operator):
+		"""This method divides two operations."""
+		return self.__truediv__(operator)
+	
+	def __div__(self, operator):
+		"""This method divides two operations."""
+		return Operator(
+			lambda plot, data, elem, offset:
+				ffp_eval(self, plot, data, elem, offset) /
+				ffp_eval(operator, plot, data, elem, offset))
+	
+	def __rdiv__(self, operator):
+		"""This method divides two operations."""
+		return self.__div__(operator)
+				
+	def __rshift__(self, key):
+		"""This method stores the value in the plot."""
+		def _set(plot, key, value):
+			plot.store_data(key, value)
+			return value
+		return Operator(lambda plot, data, elem, offset: _set(
+			plot,
+			ffp_eval(key, plot, data, elem, offset),
+			ffp_eval(self, plot, data, elem, offset)))
 
 
 
@@ -169,8 +257,8 @@ class Compose(Element):
 		return [self.left, self.right]
 	
 	def eval(self, plot, data, length, offset):
-		left = self.left.eval(plot, data, length, offset)
-		right = self.right.eval(plot, data, length, offset)
+		left = ffp_eval(self.left, plot, data, length, offset)
+		right = ffp_eval(self.right, plot, data, length, offset)
 		left.offset = offset
 		right.offset = offset
 		return Compose(left, right)
@@ -197,7 +285,7 @@ class Data(Element):
 	def eval(self, plot, data, length, offset):
 		operators = []
 		for index in range(length):
-			operator = self.operator.eval(plot, data, index, offset)
+			operator = ffp_eval(self.operator, plot, data, index, offset)
 			operator.offset = offset
 			operators.append(operator)
 		return Data(operators)
@@ -241,7 +329,7 @@ class Axis(Element):
 			left+self.margin_left, right+self.margin_right,
 			top+self.margin_top, bottom+self.margin_bottom)
 		axis = Axis(*list(map(
-			lambda x: x.eval(plot, data, elem, new_offset) if x is not None else None,
+			lambda x: ffp_eval(x, plot, data, elem, new_offset) if x is not None else None,
 				self.get_attributes())))
 		axis.component.offset = new_offset
 		return axis
