@@ -2,18 +2,20 @@
 ## A Python 2D declarative plotting library
 
 ## Examples
-#### Scatter plot
+#### Scatter Plot
 
 ```python
-ScatterPlot = Plot(Axis(
-    Data(
-        Circle(
-            Xnormal(Attr(Zero)),
-            Ynormal(Attr(One)),
-            Four,
-            background_color = ClassColor(Attr(Two))
+ScatterPlot = Plot(
+    Axis(
+        Data(
+            Circle(
+                Xnormal(Attr(Zero)),
+                Ynormal(Attr(One)),
+                Four,
+                background_color = ClassColor(Attr(Two))
+            )
         )
-    )),
+    ),
     ffp_tkinter, width = 400, height = 400
 )
 ```
@@ -65,6 +67,45 @@ BarPlot.draw([
 ```
 
 ![Bar plot](samples/bar.png)
+
+
+#### Pie Plot
+
+```python
+PiePlot = Plot(
+    Data(
+        Empty(
+            Get("angle", Zero) + Get("alpha", Zero) >> Cons("angle")
+        ) +
+        Pie(
+            Width/Two,
+            Height/Two,
+            Width/Three >> Cons("radius"),
+            Get("angle"),
+            Attr(Zero) * Cons(360) / Sum(Column(Zero)) >> Cons("alpha"),
+            background_color = ClassColor(Attr(One))
+        ) +
+        Text(
+            Width/Two + Cos(Radians(Get("angle") + Get("alpha")/Two)) * Get("radius")/Two,
+            Height/Two + Sin(Radians(Get("angle") + Get("alpha")/Two)) * Get("radius")/Two,
+            Str(Get("alpha") / Cons(3.6)) + Cons(" %"),
+            font_size = Cons(12)
+        )
+    ),
+    ffp_tkinter, width = 400, height = 400
+)
+```
+
+```python
+PiePlot.draw(
+    [20.0, "a"],
+	[40.0, "b"],
+	[65.0, "c"],
+	[75.0, "d"],
+	[50.0, "e"])
+```
+
+![Pie plot](samples/pie.png)
 
 
 ## License
