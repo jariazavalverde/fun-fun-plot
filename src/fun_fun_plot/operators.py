@@ -66,6 +66,7 @@ Get = lambda key, default = None: Operator(lambda plot, data, elem, offset:
 # These operators returns the value normalized in the x or y axis
 Xnormal = lambda op: Width * (op-Left) / (Right-Left)
 Ynormal = lambda op: Height * (op-Bot) / (Top-Bot)
+Normal = lambda data, dataset: (data - Call(min)(dataset)) / (Call(max)(dataset) - Call(min)(dataset))
 
 
 

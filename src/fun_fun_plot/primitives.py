@@ -488,6 +488,38 @@ class Pie(Element):
 
 
 
+class Arc(Element):
+	"""This class represents an arc."""
+	
+	def __init__(self, x, y, r, alpha, beta, background_color = None, border_color = None, border_width = None):
+		self.x = x
+		self.y = y
+		self.radius = r
+		self.alpha = alpha
+		self.beta = beta
+		self.background_color = background_color
+		self.border_color = border_color
+		self.border_width = border_width
+	
+	def get_attributes(self):
+		return [
+			self.x, self.y, self.radius, self.alpha, self.beta,
+			self.background_color, self.border_color, self.border_width]
+	
+	def compute(self, plot):
+		plot.set_max_dimensions(self.x, self.y, self.x, self.y)
+	
+	def draw(self, plot):
+		plot.primitives["arc"](
+			plot,
+			self.x + self.get_offset_left(),
+			self.y + self.get_offset_bottom(),
+			self.radius,
+			self.alpha, self.beta,
+			self.background_color, self.border_color, self.border_width)
+
+
+
 class Rectangle(Element):
 	"""This class represents a rectangle."""
 	
@@ -542,7 +574,7 @@ class Text(Element):
 		fs = 16 if self.font_size is None else self.font_size
 		ff = "Helvetica" if self.font_family is None else self.font_family
 		fc = "black" if self.font_color is None else self.font_color
-		ta = "center" if self.text_align is None else self.text_algin
+		ta = "center" if self.text_align is None else self.text_align
 		plot.primitives["text"](
 			plot,
 			self.x + self.get_offset_left(),
