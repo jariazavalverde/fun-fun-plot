@@ -48,7 +48,6 @@ class Plot:
 	
 	def set_max_dimensions(self, min_x, min_y, max_x, max_y):
 		"""This method updates the maximum and minimum values."""
-		print min_x, max_x
 		if min_x > max_x:
 			min_x, max_x = max_x, min_x
 		if min_y > max_y:
@@ -212,35 +211,41 @@ class Axis(Element):
 	margin_top = 30
 	margin_bottom = 30
 	
-	def __init__(self, component, nbins_x = None, nbins_y = None):
+	# Default number of ticks
+	nb_ticks = 5
+	
+	def __init__(self, component, xticks = None, yticks = None, xlabels = None, ylabels = None):
 		self.component = component
-		self.nbins_x = nbins_x
-		self.nbins_y = nbins_y
+		self.xticks = xticks
+		self.yticks = yticks
+		self.xlabels = xlabels
+		self.ylabels = ylabels
+		
 	
 	def get_attributes(self):
-		return [self.component]
+		return [self.component, self.xticks, self.yticks, self.xlabels, self.ylabels]
 	
 	def eval(self, plot, data, elem, offset):
 		left, right, top, bottom = offset
 		new_offset = (
 			left+self.margin_left, right+self.margin_right,
 			top+self.margin_top, bottom+self.margin_bottom)
-		component = self.component.eval(plot, data, elem, new_offset)
-		component.offset = new_offset
-		return Axis(component)
+		return Axis(*list(map(
+			lambda x: x.eval(plot, data, elem, new_offset) if x is not None else None,
+				self.get_attributes())))
 	
 	def compute(self, plot):
 		self.component.compute(plot)
 	
 	def draw(self, plot):
-		nbins_x = 5 if self.nbins_x is None else self.nbins_x
-		nbins_y = 5 if self.nbins_y is None else self.nbins_y
 		width = plot.width - self.get_offset_right() - self.margin_left - self.margin_right
 		height = plot.height - self.get_offset_top() - self.margin_top - self.margin_bottom
-		distance_bins_x = float(width) / float(nbins_x)
-		distance_bins_y = float(height) / float(nbins_y)
-		distance_x = float(plot.get_right()-plot.get_left()) / float(nbins_x)
-		distance_y = float(plot.get_top()-plot.get_bottom()) / float(nbins_y)
+		xticks = [float(width)/float(self.nb_ticks-1)*i for i in range(self.nb_ticks)] if self.xticks is None else self.xticks
+		yticks = [float(height)/float(self.nb_ticks-1)*i for i in range(self.nb_ticks)] if self.yticks is None else self.yticks
+		width = plot.width - self.get_offset_right() - self.margin_left - self.margin_right
+		height = plot.height - self.get_offset_top() - self.margin_top - self.margin_bottom
+		xlabels = [plot.get_left() + float(plot.get_right()-plot.get_left())/float(len(xticks)-1)*i for i in range(len(xticks))] if self.xlabels is None else self.xlabels
+		ylabels = [plot.get_bottom() + float(plot.get_top()-plot.get_bottom())/float(len(yticks)-1)*i for i in range(len(yticks))] if self.ylabels is None else self.ylabels
 		# Draw background
 		plot.primitives["rectangle"](plot,
 			self.margin_left + self.get_offset_left(),
@@ -251,8 +256,8 @@ class Axis(Element):
 		# Draw component inside
 		self.component.draw(plot)
 		# Draw axis
-		for i in range(nbins_x + 1):
-			xi = self.margin_left + self.get_offset_left() + i*distance_bins_x
+		for i in range(len(xticks)):
+			xi = self.margin_left + self.get_offset_left() + xticks[i]
 			plot.primitives["line"](
 				plot,
 				xi,
@@ -264,10 +269,10 @@ class Axis(Element):
 				plot,
 				xi,
 				self.margin_bottom + self.get_offset_bottom() - 15,
-				str(plot.get_left() + i*distance_x),
+				str(xlabels[i]),
 				"Arial", 10, "black", "center")
-		for i in range(nbins_y + 1):
-			yi = self.margin_bottom + self.get_offset_bottom() + i*distance_bins_y
+		for i in range(len(yticks)):
+			yi = self.margin_bottom + self.get_offset_bottom() + yticks[i]
 			plot.primitives["line"](
 				plot,
 				self.margin_left + self.get_offset_left() - 5,
@@ -279,7 +284,7 @@ class Axis(Element):
 				plot,
 				self.margin_left + self.get_offset_left() - 10,
 				yi,
-				str(plot.get_bottom() + i*distance_y),
+				str(ylabels[i]),
 				"Arial", 10, "black", "right")
 			
 

@@ -84,7 +84,7 @@ Bot = Operator(lambda plot, data, elem, offset: plot.get_bottom())
 # ACCESSING DATA
 
 # This operator returns the current index of the data
-Index = Operator(lambda plot, data, elem, offset: elem)
+Index = Operator(lambda plot, data, elem, offset: float(elem))
 
 # This operator returns the current value of the data
 Value = Operator(lambda plot, data, elem, offset: data[elem])
@@ -92,8 +92,11 @@ Value = Operator(lambda plot, data, elem, offset: data[elem])
 # This operator returns the n-th value of the attribute
 Attr = lambda n: Operator(lambda plot, data, elem, offset: data[elem][n.eval(plot, data, elem, offset)])
 
+# This operator returns the n-th column of the dataset
+Column = lambda n: Operator(lambda plot, data, elem, offset:(lambda _n: list(map(lambda x: x[_n], data)))(n.eval(plot, data, elem, offset)))
+
 # This operator returns the length of the data
-DataLen = Operator(lambda plot, data, elem, offset: len(data))
+DataLen = Operator(lambda plot, data, elem, offset: float(len(data)))
 
 
 
@@ -119,3 +122,16 @@ Pi = Cons(pi)
 
 # Assign color to a class
 ClassColor = lambda classname: Operator(lambda plot, data, elem, offset: plot.class_color(classname.eval(plot, data, elem, offset)))
+
+
+
+# LIST OPERATIONS
+
+# This operator returns a range
+def Range(n, start, incr):
+	def _range(n, start, incr):
+		return list(map(lambda i: start+incr*i, range(int(n))))
+	return Operator(lambda plot, data, elem, offset: _range(
+		n.eval(plot, data, elem, offset),
+		start.eval(plot, data, elem, offset),
+		incr.eval(plot, data, elem, offset)))
