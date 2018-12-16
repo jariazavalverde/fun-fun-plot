@@ -97,12 +97,13 @@ PiePlot = Plot(
 ```
 
 ```python
-PiePlot.draw(
+PiePlot.draw([
     [20.0, "a"],
-	[40.0, "b"],
-	[65.0, "c"],
-	[75.0, "d"],
-	[50.0, "e"])
+    [40.0, "b"],
+    [65.0, "c"],
+    [75.0, "d"],
+    [50.0, "e"]
+])
 ```
 
 ![Pie plot](samples/pie.png)
