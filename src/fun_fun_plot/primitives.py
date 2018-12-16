@@ -230,20 +230,20 @@ class Axis(Element):
 		new_offset = (
 			left+self.margin_left, right+self.margin_right,
 			top+self.margin_top, bottom+self.margin_bottom)
-		return Axis(*list(map(
+		axis = Axis(*list(map(
 			lambda x: x.eval(plot, data, elem, new_offset) if x is not None else None,
 				self.get_attributes())))
+		axis.component.offset = new_offset
+		return axis
 	
 	def compute(self, plot):
 		self.component.compute(plot)
 	
 	def draw(self, plot):
-		width = plot.width - self.get_offset_right() - self.margin_left - self.margin_right
-		height = plot.height - self.get_offset_top() - self.margin_top - self.margin_bottom
+		width = plot.width - self.get_offset_left() - self.get_offset_right() - self.margin_left - self.margin_right
+		height = plot.height - self.get_offset_bottom() - self.get_offset_top() - self.margin_top - self.margin_bottom
 		xticks = [float(width)/float(self.nb_ticks-1)*i for i in range(self.nb_ticks)] if self.xticks is None else self.xticks
 		yticks = [float(height)/float(self.nb_ticks-1)*i for i in range(self.nb_ticks)] if self.yticks is None else self.yticks
-		width = plot.width - self.get_offset_right() - self.margin_left - self.margin_right
-		height = plot.height - self.get_offset_top() - self.margin_top - self.margin_bottom
 		xlabels = [plot.get_left() + float(plot.get_right()-plot.get_left())/float(len(xticks)-1)*i for i in range(len(xticks))] if self.xlabels is None else self.xlabels
 		ylabels = [plot.get_bottom() + float(plot.get_top()-plot.get_bottom())/float(len(yticks)-1)*i for i in range(len(yticks))] if self.ylabels is None else self.ylabels
 		# Draw background
