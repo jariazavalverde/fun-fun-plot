@@ -1,6 +1,24 @@
 # Fun Fun Plot
 ## A Python 2D declarative plotting library
 
+**Fun Fun Plot** is a library for making 2D plots of arrays in [Python](https://www.python.org/) through a declarative approach. All plots are constructed by combining primitive elements (lines, rectangles, circles, arcs, ...), associating the parameters of these primitives with values or characteristics of data sets.
+
+For example, in a scatter plot, each data `pi = (xi, yi)` is graphically represented by a circle `(x, y, r)`, where the first attribute `xi` encodes the position on the `x` axis, and the second attribute `yi` encodes the position on the `y` axis, being `r` an arbitrary radius. This is expressed in **Fun Fun Plot** as follows:
+
+```python
+ScatterPlot = Plot(
+    Data(                     # For each data x = (x0, x1)
+        Circle(               #  | draw a circle with
+            Xnormal(Attr(0)), #     | center x in x[0],
+            Ynormal(Attr(1)), #     | center y in x[1],
+            4                 #     | and radius 4
+        )
+    ),
+    # (...) options of the plot
+)
+```
+Now, you can plot any data set by calling the `draw()` method of `ScatterPlot` (check out the [examples](#examples) section to see complete examples).
+
 ## Examples
 #### Scatter Plot
 
