@@ -1,3 +1,5 @@
+![Fun Fun Plot](logo/funfunplot-color450x100.png)
+
 # Fun Fun Plot
 ## A Python 2D declarative plotting library
 
