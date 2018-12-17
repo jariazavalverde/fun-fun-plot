@@ -21,6 +21,13 @@ ScatterPlot = Plot(
 ```
 Now, you can plot any data set by calling the `draw()` method of `ScatterPlot` (check out the [examples](#examples) section to see complete examples).
 
+
+
+## License
+Source code is released under the terms of the [BSD 3-Clause License](LICENSE).
+
+
+
 ## Examples
 #### Scatter Plot
 
@@ -44,7 +51,7 @@ ScatterPlot = Plot(
 ScatterPlot.draw(iris)
 ```
 
-![Scatter plot](samples/scatter.png)
+![Scatter plot](img/scatter.png)
 
 
 #### Bar Plot
@@ -86,7 +93,7 @@ BarPlot.draw([
 ])
 ```
 
-![Bar plot](samples/bar.png)
+![Bar plot](img/bar.png)
 
 
 #### Pie Plot
@@ -126,7 +133,7 @@ PiePlot.draw([
 ])
 ```
 
-![Pie plot](samples/pie.png)
+![Pie plot](img/pie.png)
 
 
 
@@ -192,10 +199,6 @@ RadialBarPlot.draw([
 ])
 ```
 
-![Radial Bar plot](samples/radialbar.png)
+![Radial Bar plot](img/radialbar.png)
 
 
-
-
-## License
-Source code is released under the terms of the [BSD 3-Clause License](LICENSE).
