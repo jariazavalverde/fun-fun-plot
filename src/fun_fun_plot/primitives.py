@@ -56,6 +56,7 @@ class Plot:
 		plot.canvas = plot.primitives["canvas"](plot.width, plot.height)
 		# Draw data
 		ffp_eval(plot.component, plot, data, length, (0,0,0,0)).draw(plot)
+		self.primitives["after"](plot)
 		return plot
 	
 	def set_max_dimensions(self, min_x, min_y, max_x, max_y):

@@ -21,6 +21,9 @@ def __tkinter_canvas(width, height):
 	w.pack()
 	return w
 
+def __tkinter_after(plot):
+	plot.canvas.mainloop()
+
 def __tkinter_line(plot, x, y, fx, fy, border, width):
 	"""This function draws a line with the Tkinter library."""
 	plot.canvas.create_line(
@@ -108,6 +111,7 @@ def __tkinter_text(plot, x, y, text, family, size, color, align):
 # This dictionary stores all the primitives of the Tkinter library.
 ffp_tkinter = {
 	"canvas": __tkinter_canvas,
+	"after": __tkinter_after,
 	"line": __tkinter_line,
 	"pie": __tkinter_pie,
 	"arc": __tkinter_arc,
