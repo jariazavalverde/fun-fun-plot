@@ -3,7 +3,7 @@
 """This module provides an interface for the Tkinter library."""
 
 from math import sin, cos
-from Tkinter import Canvas, Tk, CENTER, E, W, PIESLICE, ARC
+from Tkinter import Canvas, Tk, CENTER, E, W, PIESLICE, ARC, PhotoImage, NW
 
 __author__ = "José Antonio Riaza Valverde"
 __copyright__ = "Copyright 2018, José Antonio Riaza Valverde"
@@ -106,6 +106,11 @@ def __tkinter_text(plot, x, y, text, family, size, color, align):
 		anchor = anchor
 	)
 
+def __tkinter_image(plot, path, x, y):
+	"""This function draws an image with the Tkinter library."""
+	img = PhotoImage(file = path)
+	plot.canvas.create_image(x, y, image=img, anchor=NW)
+
 
 
 # This dictionary stores all the primitives of the Tkinter library.
@@ -117,5 +122,6 @@ ffp_tkinter = {
 	"arc": __tkinter_arc,
 	"circle": __tkinter_circle,
 	"rectangle": __tkinter_rectangle,
-	"text": __tkinter_text
+	"text": __tkinter_text,
+	"image": __tkinter_image
 }
