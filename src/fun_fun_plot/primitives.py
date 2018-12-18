@@ -36,6 +36,7 @@ class Plot:
 		self.canvas = None
 		self.width = width
 		self.height = height
+		self.images = []
 		# (left, right, top, bottom)
 		self.dimensions = (float('inf'), float('-inf'), float('-inf'), float('inf'))
 	
@@ -121,6 +122,10 @@ class Plot:
 	def get_data(self, key, default):
 		"""This method returns the data for the given key."""
 		return self.data.get(key, default)
+	
+	def push_image(self, image):
+		"""This method stores an image."""
+		self.images.append(image)
 
 
 
@@ -581,3 +586,22 @@ class Text(Element):
 			self.x + self.get_offset_left(),
 			self.y + self.get_offset_bottom(),
 			str(self.text), ff, fs, fc, ta)
+
+
+
+class Image(Element):
+	"""This class represents a image."""
+	
+	def __init__(self, x, y, path):
+		self.x = x
+		self.y = y
+		self.path = path
+	
+	def get_attributes(self):
+		return [self.x, self.y, self.path]
+	
+	def compute(self, plot):
+		plot.set_max_dimensions(self.x, self.y, self.x, self.y)
+	
+	def draw(self, plot):
+		plot.primitives["image"](plot, self.x, self.y, self.path)

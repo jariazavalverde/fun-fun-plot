@@ -106,9 +106,10 @@ def __tkinter_text(plot, x, y, text, family, size, color, align):
 		anchor = anchor
 	)
 
-def __tkinter_image(plot, path, x, y):
+def __tkinter_image(plot, x, y, path):
 	"""This function draws an image with the Tkinter library."""
 	img = PhotoImage(file = path)
+	plot.push_image(img)
 	plot.canvas.create_image(x, y, image=img, anchor=NW)
 
 
